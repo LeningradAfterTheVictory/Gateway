@@ -1,0 +1,11 @@
+networks:
+  custom_network:
+    external: true  # Используем внешнюю сеть
+
+services:
+  gateway-api:
+    build: .
+    ports:
+      - "6060:8080"
+    networks:
+      - custom_network
