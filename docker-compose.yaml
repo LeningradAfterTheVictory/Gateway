@@ -1,6 +1,8 @@
 networks:
-  custom_network:
-    external: true  # Используем внешнюю сеть
+  my_custom_network:
+    name: my_custom_network
+    driver: bridge
+    external: true
 
 services:
   gateway-api:
@@ -8,4 +10,4 @@ services:
     ports:
       - "6060:8080"
     networks:
-      - custom_network
+      - my_custom_network
