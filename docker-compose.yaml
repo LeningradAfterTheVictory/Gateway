@@ -2,7 +2,6 @@ networks:
   my_custom_network:
     name: my_custom_network
     driver: bridge
-    external: true
 
 services:
   gateway-api:
