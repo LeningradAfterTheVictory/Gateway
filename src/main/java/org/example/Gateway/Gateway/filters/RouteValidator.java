@@ -10,9 +10,28 @@ import java.util.function.Predicate;
 @Component
 public class RouteValidator {
 
-    // Список открытых эндпоинтов (не требуют аутентификации)
     public static final List<String> openApiEndpoints = List.of(
-            "/api/authentication/**"
+            "/api/authentication/**",
+
+            // {id:\d+}
+            "/api/user/getUser/**",
+
+            "/api/files/download",
+            "/api/files/list",
+
+            "/api/attractions/filter",
+            "/api/attractions/attraction/**",
+            "/api/attractions/**/routes",
+
+            "/api/categories/category/**",
+            "/api/categories/all",
+
+            "/api/routes/route/**",
+            "/api/routes/all",
+            "/api/routes/routeByCategory/**",
+            "/api/routes/**/computed",
+            "/api/routes/computeWalkingRoute",
+            "/api/routes/computeWalkingRouteList"
     );
 
     // Маппинг маршрутов и требуемых ролей
@@ -27,8 +46,18 @@ public class RouteValidator {
 
     // Предикат для проверки защищенности маршрута
     public Predicate<ServerHttpRequest> isSecured =
-            request -> openApiEndpoints.stream()
-                    .noneMatch(uri -> new AntPathMatcher().match(uri, request.getURI().getPath()));
+            request -> {
+                String path = request.getURI().getPath();
+                boolean isOpen = openApiEndpoints.stream()
+                        .anyMatch(uri -> {
+                            boolean match = new AntPathMatcher().match(uri, path);
+                            if (match) {
+                                System.out.println("Matched open endpoint: " + uri + " with path: " + path);
+                            }
+                            return match;
+                        });
+                return !isOpen;
+            };
 
     // Метод для получения требуемых ролей по URL
     public List<String> getRequiredRoles(String path) {
