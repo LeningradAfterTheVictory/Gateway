@@ -22,12 +22,13 @@ public class RouteValidator {
             "/api/attractions/filter",
             "/api/attractions/attraction/**",
             "/api/attractions/**/routes",
+            "/api/attractions/get-all",
 
             "/api/categories/category/**",
-            "/api/categories/all",
+            "/api/categories/get-all",
 
             "/api/routes/route/**",
-            "/api/routes/all",
+            "/api/routes/get-all",
             "/api/routes/routeByCategory/**",
             "/api/routes/**/computed",
             "/api/routes/computeWalkingRoute",
