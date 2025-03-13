@@ -16,6 +16,9 @@ public class RouteValidator {
             // {id:\d+}
             "/api/user/getUser/**",
 
+            "/api/favorites/routes/**",
+            "/api/favorites/buildings/**",
+
             "/api/files/download",
             "/api/files/list",
 
@@ -42,7 +45,8 @@ public class RouteValidator {
             "/api/attractions/**", List.of("USER", "ADMIN"),
             "/api/routes/**", List.of("USER", "ADMIN"),
             "/api/categories/**", List.of("USER", "ADMIN"),
-            "/api/user/**", List.of("USER", "ADMIN")
+            "/api/user/**", List.of("USER", "ADMIN"),
+            "/api/favorites/**", List.of("USER", "ADMIN")
     );
 
     // Предикат для проверки защищенности маршрута
