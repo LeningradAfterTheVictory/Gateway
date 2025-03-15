@@ -16,8 +16,8 @@ public class RouteValidator {
             // {id:\d+}
             "/api/user/getUser/**",
 
-            "/api/favorites/routes/**",
-            "/api/favorites/buildings/**",
+            "/api/favorites/routes",
+            "/api/favorites/buildings",
 
             "/api/files/download",
             "/api/files/list",
