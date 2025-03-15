@@ -41,7 +41,7 @@ public class RouteValidator {
     // Маппинг маршрутов и требуемых ролей
     private static final Map<String, List<String>> roleRequirements = Map.of(
             "/request/**", List.of("USER", "ADMIN"),
-            "/files/**", List.of("USER", "ADMIN"),
+            "/files/**", List.of("ADMIN"),
             "/api/attractions/**", List.of("USER", "ADMIN"),
             "/api/routes/**", List.of("USER", "ADMIN"),
             "/api/categories/**", List.of("USER", "ADMIN"),
