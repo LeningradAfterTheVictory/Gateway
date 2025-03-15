@@ -29,32 +29,23 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getURI().getPath();
 
-            // Пропустить проверку для открытых эндпоинтов
             if (!validator.isSecured.test(request)) {
                 return chain.filter(exchange);
             }
 
-            // Проверка наличия токена
-            if (!request.getHeaders().containsKey(HttpHeaders.AUTHORIZATION)) {
-                throw new RuntimeException("Missing authorization header");
+            if (!request.getCookies().containsKey("jwtAuth")) {
+                throw new RuntimeException("Missing authorization cookie");
             }
 
-            String authHeader = request.getHeaders().getFirst(HttpHeaders.AUTHORIZATION);
-            String token = (authHeader != null && authHeader.startsWith("Bearer "))
-                    ? authHeader.substring(7)
-                    : null;
+            String token = request.getCookies().getFirst("jwtAuth").getValue();
 
             try {
-                // Валидация токена
                 jwtUtil.validateToken(token);
 
-                // Извлечение ролей из токена
                 String userRole = jwtUtil.getRoles(token);
 
-                // Получение требуемых ролей для маршрута
                 List<String> requiredRoles = validator.getRequiredRoles(path);
-
-                // Проверка ролей
+                
                 if (!requiredRoles.isEmpty()) {
                     boolean hasAccess = requiredRoles.contains(userRole);
                     if (!hasAccess) {
@@ -63,8 +54,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 }
 
             } catch (Exception e) {
-                System.out.println("invalid access...! REASON: " + e);
-                throw new RuntimeException("un authorized access to application");
+                System.out.println("Invalid access...! REASON: " + e);
+                throw new RuntimeException("Unauthorized access to application");
             }
 
             return chain.filter(exchange);
