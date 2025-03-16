@@ -4,9 +4,12 @@ import org.example.Gateway.Gateway.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -34,7 +37,7 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             }
 
             if (!request.getCookies().containsKey("jwtAuth")) {
-                throw new RuntimeException("Missing authorization cookie");
+                return onError(exchange, "Missing authorization cookie", HttpStatus.UNAUTHORIZED);
             }
 
             String token = request.getCookies().getFirst("jwtAuth").getValue();
@@ -45,21 +48,29 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 String userRole = jwtUtil.getRoles(token);
 
                 List<String> requiredRoles = validator.getRequiredRoles(path);
-                
+
                 if (!requiredRoles.isEmpty()) {
                     boolean hasAccess = requiredRoles.contains(userRole);
                     if (!hasAccess) {
-                        throw new RuntimeException("Access denied");
+                        return onError(exchange, "Access denied", HttpStatus.FORBIDDEN);
                     }
                 }
 
             } catch (Exception e) {
                 System.out.println("Invalid access...! REASON: " + e);
-                throw new RuntimeException("Unauthorized access to application");
+                return onError(exchange, "Token is invalid", HttpStatus.UNAUTHORIZED);
             }
 
             return chain.filter(exchange);
         });
+    }
+
+    private Mono<Void> onError(ServerWebExchange exchange, String err, HttpStatus httpStatus) {
+        ServerHttpResponse response = exchange.getResponse();
+        response.setStatusCode(httpStatus);
+        response.getHeaders().add("Content-Type", "application/json");
+        String errorMessage = "{\"error\": \"" + err + "\"}";
+        return response.writeWith(Mono.just(response.bufferFactory().wrap(errorMessage.getBytes())));
     }
 
     public static class Config {}
