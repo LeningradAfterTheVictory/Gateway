@@ -35,7 +35,7 @@ public class RouteValidator {
             "/api/routes/routeByCategory/**",
             "/api/routes/**/computed",
             "/api/routes/computeWalkingRoute",
-            "/api/routes/computeWalkingRouteList"
+            "/api/routes/computeWalkingRoutesList"
     );
 
     // Маппинг маршрутов и требуемых ролей
