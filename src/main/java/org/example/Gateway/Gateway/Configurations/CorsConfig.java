@@ -20,7 +20,7 @@ public class CorsConfig {
         corsConfig.addAllowedHeader("*");
         corsConfig.setAllowCredentials(true);
 
-        corsConfig.setExposedHeaders(List.of("Set-Cookie", "Cookie"));
+        corsConfig.setExposedHeaders(List.of("Set-Cookie", "Cookie", "Authorization"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfig);

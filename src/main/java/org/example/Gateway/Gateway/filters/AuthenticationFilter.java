@@ -32,12 +32,24 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
             ServerHttpRequest request = exchange.getRequest();
             String path = request.getURI().getPath();
 
+            ServerHttpRequest modifiedRequest = request.mutate()
+                    .headers(headers -> {
+                        if (request.getCookies().containsKey("jwtAuth")) {
+                            String token = request.getCookies().getFirst("jwtAuth").getValue();
+                            headers.add("Authorization", "Bearer " + token);
+                        }
+                    })
+                    .build();
+            ServerWebExchange modifiedExchange = exchange.mutate()
+                    .request(modifiedRequest)
+                    .build();
+
             if (!validator.isSecured.test(request)) {
-                return chain.filter(exchange);
+                return chain.filter(modifiedExchange);
             }
 
             if (!request.getCookies().containsKey("jwtAuth")) {
-                return onError(exchange, "Missing authorization cookie", HttpStatus.UNAUTHORIZED);
+                return onError(modifiedExchange, "Missing authorization cookie", HttpStatus.UNAUTHORIZED);
             }
 
             String token = request.getCookies().getFirst("jwtAuth").getValue();
@@ -52,16 +64,16 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 if (!requiredRoles.isEmpty()) {
                     boolean hasAccess = requiredRoles.contains(userRole);
                     if (!hasAccess) {
-                        return onError(exchange, "Access denied", HttpStatus.FORBIDDEN);
+                        return onError(modifiedExchange, "Access denied", HttpStatus.FORBIDDEN);
                     }
                 }
 
             } catch (Exception e) {
                 System.out.println("Invalid access...! REASON: " + e);
-                return onError(exchange, "Token is invalid", HttpStatus.UNAUTHORIZED);
+                return onError(modifiedExchange, "Token is invalid", HttpStatus.UNAUTHORIZED);
             }
 
-            return chain.filter(exchange);
+            return chain.filter(modifiedExchange);
         });
     }
 
