@@ -45,10 +45,12 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                     .build();
 
             if (!validator.isSecured.test(request)) {
+                System.out.println("The path is open :)");
                 return chain.filter(modifiedExchange);
             }
 
             if (!request.getCookies().containsKey("jwtAuth")) {
+                System.out.println("No jwtAuth cookie found :(");
                 return onError(modifiedExchange, "Missing authorization cookie", HttpStatus.UNAUTHORIZED);
             }
 
@@ -58,6 +60,8 @@ public class AuthenticationFilter extends AbstractGatewayFilterFactory<Authentic
                 jwtUtil.validateToken(token);
 
                 String userRole = jwtUtil.getRoles(token);
+
+                System.out.println("Found role: " + userRole);
 
                 List<String> requiredRoles = validator.getRequiredRoles(path);
 

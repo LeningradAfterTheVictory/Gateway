@@ -11,7 +11,8 @@ import java.util.function.Predicate;
 public class RouteValidator {
 
     public static final List<String> openApiEndpoints = List.of(
-            "/api/authentication/**",
+            "/api/authentication/register",
+            "/api/authentication/token",
 
             // {id:\d+}
             "/api/user/getUser/**",
@@ -46,7 +47,8 @@ public class RouteValidator {
             "/api/routes/**", List.of("USER", "ADMIN"),
             "/api/categories/**", List.of("USER", "ADMIN"),
             "/api/user/**", List.of("USER", "ADMIN"),
-            "/api/favorites/**", List.of("USER", "ADMIN")
+            "/api/favorites/**", List.of("USER", "ADMIN"),
+            "/api/authentication/**", List.of("USER", "ADMIN")
     );
 
     // Предикат для проверки защищенности маршрута
