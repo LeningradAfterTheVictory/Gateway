@@ -11,44 +11,44 @@ import java.util.function.Predicate;
 public class RouteValidator {
 
     public static final List<String> openApiEndpoints = List.of(
-            "/api/authentication/register",
-            "/api/authentication/token",
+            "/authentication/register",
+            "/authentication/token",
 
             // {id:\d+}
-            "/api/user/getUser/**",
+            "/user/getUser/**",
 
-            "/api/favorites/routes",
-            "/api/favorites/buildings",
+            "/favorites/routes",
+            "/favorites/buildings",
 
-            "/api/files/download",
-            "/api/files/list",
+            "/files/download",
+            "/files/list",
 
-            "/api/attractions/filter",
-            "/api/attractions/attraction/**",
-            "/api/attractions/**/routes",
-            "/api/attractions/get-all",
+            "/attractions/filter",
+            "/attractions/attraction/**",
+            "/attractions/**/routes",
+            "/attractions/get-all",
 
-            "/api/categories/category/**",
-            "/api/categories/get-all",
+            "/categories/category/**",
+            "/categories/get-all",
 
-            "/api/routes/route/**",
-            "/api/routes/get-all",
-            "/api/routes/routeByCategory/**",
-            "/api/routes/**/computed",
-            "/api/routes/computeWalkingRoute",
-            "/api/routes/computeWalkingRoutesList"
+            "/routes/route/**",
+            "/routes/get-all",
+            "/routes/routeByCategory/**",
+            "/routes/**/computed",
+            "/routes/computeWalkingRoute",
+            "/routes/computeWalkingRoutesList"
     );
 
     // Маппинг маршрутов и требуемых ролей
     private static final Map<String, List<String>> roleRequirements = Map.of(
             "/request/**", List.of("USER", "ADMIN"),
             "/files/**", List.of("ADMIN"),
-            "/api/attractions/**", List.of("USER", "ADMIN"),
-            "/api/routes/**", List.of("USER", "ADMIN"),
-            "/api/categories/**", List.of("USER", "ADMIN"),
-            "/api/user/**", List.of("USER", "ADMIN"),
-            "/api/favorites/**", List.of("USER", "ADMIN"),
-            "/api/authentication/**", List.of("USER", "ADMIN")
+            "/attractions/**", List.of("USER", "ADMIN"),
+            "/routes/**", List.of("USER", "ADMIN"),
+            "/categories/**", List.of("USER", "ADMIN"),
+            "/user/**", List.of("USER", "ADMIN"),
+            "/favorites/**", List.of("USER", "ADMIN"),
+            "/authentication/**", List.of("USER", "ADMIN")
     );
 
     // Предикат для проверки защищенности маршрута
